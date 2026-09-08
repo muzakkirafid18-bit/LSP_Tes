@@ -1,0 +1,1798 @@
+<!DOCTYPE html>
+<?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+session_start();
+?>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LSP - Dashboard</title>
+
+<link href="../lummenu/css/bootstrap.min.css" rel="stylesheet">
+<link href="../lummenu/css/datepicker3.css" rel="stylesheet">
+<link href="../lummenu/css/styles.css" rel="stylesheet">
+<link href="../lummenu/css/adminstyle.css" rel="stylesheet">
+<link href='../css/tombol.css' rel='stylesheet' type='text/css'>
+<link href="../css/tabelbaru2.css" rel="stylesheet">
+<script src="../js/jquery.min.js"></script>
+<script src="../lummenu/js/lumino.glyphs.js"></script>
+<script src="../js/formValidation.min.js"></script>
+<script src="../js/framework/bootstrap.min.js"></script>
+<script src="../lummenu/js/jquery-2.2.3.min.js"></script>
+<script src="../lummenu/js/bootstrap.js"></script>
+<script src="../lummenu/js/bootstrap-datepicker.js"></script>
+
+<script type="text/javascript">
+            $(document).ready(function () {
+                $('#tanggal').datepicker({
+                    format: "dd-mm-yyyy",
+                    autoclose:true
+                });
+            });
+        </script>
+<script type="text/javascript">
+window.setTimeout(function() {
+    $(".alert").fadeTo(500, 0).slideUp(500, function(){
+        $(this).remove(); 
+    });
+}, 3000);
+</script>
+<script language="javascript">
+
+/*
+Auto center window script- Eric King (http://redrival.com/eak/index.shtml)
+Permission granted to Dynamic Drive to feature script in archive
+For full source, usage terms, and 100's more DHTML scripts, visit http://dynamicdrive.com
+*/
+
+var win = null;
+function NewWindow(mypage,myname,w,h,scroll){
+LeftPosition = (screen.width) ? (screen.width-w)/2 : 0;
+TopPosition = (screen.height) ? (screen.height-h)/2 : 0;
+settings =
+'height='+h+',width='+w+',top='+TopPosition+',left='+LeftPosition+',scrollbars='+scroll+',resizable'
+win = window.open(mypage,myname,settings)
+}
+
+</script>
+
+
+
+<?php
+//error_reporting(0);
+//session_set_cookie_params(3600*2,"/");
+//session_start();
+include "../lsp_koneksi.php";
+if (empty($_SESSION['username']) AND empty($_SESSION['password'])){
+ echo "<center><link href='css/adminstyle.css' rel='stylesheet' type='text/css'><strong> Anda Harus Login Dahulu ...!</strong><br>";
+ echo "<a href=../lsp_login.php class='btn btn-primary btn-sm' role='button'> Kembali</a></center>"; 
+}
+else{
+if(isset($_SESSION['username'])) { $unameaplsatu=$_SESSION['username'];}
+else { $unameaplsatu=$_SESSION['username']; }
+
+$lsatu="SELECT * FROM users WHERE username='".$unameaplsatu."'";
+$resultxsatu=mysqli_query($conn,$lsatu);
+$hasilxsatu=mysqli_fetch_array($resultxsatu);
+$namaxaplsatu=$hasilxsatu['nama']; 
+
+?>
+<style>
+
+form div.dynamiclabel{ /* div container for each form field with pop up label */
+  display: block;
+  margin: 5px 2px 6px 15px;
+  font: 16px;
+  position: relative;
+}
+
+form div.formcolumn{ /* column div inside form */
+width: 49%;
+float: left;
+}
+
+form div.formcolumn:first-of-type{
+margin-right: 1%; /* 2% margin after first column */
+}
+
+form div.dynamiclabel input[type="text"], form div.dynamiclabel textarea{
+  /*width: 200px;*/
+  font-size: 13px;
+  padding: 7px;
+  border: 1px solid #c3c3c3;
+  border-radius: 7px;
+  
+}
+
+form div.dynamiclabel textarea{
+	height: 150px;
+}
+
+form div.dynamiclabel select{
+  
+  font-size: 14px;
+  padding: 7px;
+  border: 1px solid #c3c3c3;
+  border-radius: 7px;
+  /*text-transform: uppercase*/
+}
+
+form div.buttons{
+clear: both;
+text-align: center;
+}
+
+form div input.button{
+margin-top: 2EM;
+width: 35%;
+box-shadow: 0 0 10px gray;
+text-transform: uppercase;
+cursor: pointer;
+min-width: 100px;
+max-width: 600px;
+color: white;
+font-weight: bold;
+letter-spacing: 10px;
+text-shadow: 0 -2px 1px #8a8a8a;
+background: rgb(169,3,41);
+background: -moz-linear-gradient(top,  rgba(169,3,41,1) 0%, rgba(143,2,34,1) 44%, rgba(109,0,25,1) 100%);
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(169,3,41,1)), color-stop(44%,rgba(143,2,34,1)), color-stop(100%,rgba(109,0,25,1)));
+background: -webkit-linear-gradient(top,  rgba(169,3,41,1) 0%,rgba(143,2,34,1) 44%,rgba(109,0,25,1) 100%);
+background: -o-linear-gradient(top,  rgba(169,3,41,1) 0%,rgba(143,2,34,1) 44%,rgba(109,0,25,1) 100%);
+background: -ms-linear-gradient(top,  rgba(169,3,41,1) 0%,rgba(143,2,34,1) 44%,rgba(109,0,25,1) 100%);
+background: linear-gradient(to bottom,  rgba(169,3,41,1) 0%,rgba(143,2,34,1) 44%,rgba(109,0,25,1) 100%);
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a90329', endColorstr='#6d0019',GradientType=0 );
+}
+
+form div input.button:active{
+text-shadow: 0 0 1px #8a8a8a;
+background: rgb(109,0,25);
+background: -moz-linear-gradient(top,  rgba(109,0,25,1) 0%, rgba(143,2,34,1) 56%, rgba(169,3,41,1) 100%);
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(109,0,25,1)), color-stop(56%,rgba(143,2,34,1)), color-stop(100%,rgba(169,3,41,1)));
+background: -webkit-linear-gradient(top,  rgba(109,0,25,1) 0%,rgba(143,2,34,1) 56%,rgba(169,3,41,1) 100%);
+background: -o-linear-gradient(top,  rgba(109,0,25,1) 0%,rgba(143,2,34,1) 56%,rgba(169,3,41,1) 100%);
+background: -ms-linear-gradient(top,  rgba(109,0,25,1) 0%,rgba(143,2,34,1) 56%,rgba(169,3,41,1) 100%);
+background: linear-gradient(to bottom,  rgba(109,0,25,1) 0%,rgba(143,2,34,1) 56%,rgba(169,3,41,1) 100%);
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#6d0019', endColorstr='#a90329',GradientType=0 );
+}
+
+
+
+form div.dynamiclabel label{ /* pop up label style */
+  position: absolute;
+  left: 0;
+  background: lightyellow;
+  border: 1px solid yellow;
+  border-radius: 2px;
+  padding: 3px 7px;
+  box-shadow: 4px 1px 5px gray;
+  font-weight: bold;
+	-webkit-backface-visibility: hidden;
+	top: 7px; /* initial top position of label relative to dynamiclabel container */
+  -moz-transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  -webkit-transition: all 0.4s ease-in-out; /* Safari doesn't seem to support cubic-bezier values beyond 0 to 1, so use keyword value instead */
+  -o-transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  opacity: 0;
+  z-index: -1;
+}
+
+
+form div.dynamiclabel > *:focus{ /* when user focuses on child element inside div.dynamiclabel */
+  border: 1px solid #45bcd2;
+  box-shadow: 0 0 8px 2px #98d865;
+}
+
+
+form div.dynamiclabel > *:focus + label{ /* label style when user focuses on child element inside div.dynamiclabel */
+  opacity: 1;
+  z-index:100;
+	top: -35px; /* Post top position of label on focus relative to dynamiclabel container */
+	-ms-transform: rotate(-3deg);
+	-moz-transform: rotate(-3deg);
+	-webkit-transform: rotate(-3deg);
+  transform: rotate(-3deg);
+}
+
+
+@media screen and (max-width: 480px){ /* responsive form settings, when window width is 480px or less */
+
+	form div.dynamiclabel{
+	font-size: 14px; /* decrease form font size */
+	}
+
+	form div.dynamiclabel .formcolumn{
+	width: 100%;
+	float: none;
+	}
+	
+	form div.dynamiclabel .formcolumn:first-of-type{
+	margin-right: 0; /* remove right margin from first form column */
+	}
+
+	form div.dynamiclabel .formcolumn:nth-of-type(2){
+	padding-top: 2em; /* add padding to top of 2nd form column, so there is a gap between the 1st and 2nd column */
+	}
+
+	form div.dynamiclabel select{
+	width: 98%;
+	}
+
+}
+
+
+</style>
+<script type="text/javascript">
+            $(document).ready(function () {
+                $('#tanggal').datepicker({
+                    format: "dd-mm-yyyy",
+                    autoclose:true
+                });
+            });
+        </script>	
+
+<script type="text/javascript">
+$(document).ready (function() {
+	$('#formContoh').formValidation({
+		framework: 'bootstrap',
+		excluded: 'disabled',
+
+		icon: {
+			valid: 'glyphicon glyphicon-ok',
+            invalid: 'glyphicon glyphicon-remove',
+            validating: 'glyphicon glyphicon-refresh'
+		},
+		fields: {
+			nama: {
+				validators: {
+					notEmpty: {
+						message: 'Username Tidak Boleh Kosong'
+					}
+				}
+			},
+			
+			tmplahir: {
+				validators: {
+					notEmpty: {
+						message: 'Nama Tidak Boleh Kosong'
+					}
+				}
+			},
+
+			tahun: {
+				validators: {
+					notEmpty: {
+						message: 'Tahun Tidak Boleh Kosong'
+					}
+				}
+			},
+			alamat: {
+				validators: {
+					notEmpty: {
+						message: 'Tidak Boleh Kosong'
+					},
+								
+				}
+			},
+                        kodepos: {
+				validators: {
+					notEmpty: {
+						message: 'Tidak boleh kosong'
+					},
+				}
+			},
+			pendidikan: {
+				validators: {
+					notEmpty: {
+						message: 'Tidak Boleh Kosong'
+					},
+				}
+			},
+			kebangsaan: {
+				validators: {
+					notEmpty: {
+						message: 'Tidak Boleh Kosong'
+					},
+				}
+			},
+			lembaga: {
+				validators: {
+					notEmpty: {
+						message: 'Tidak Boleh Kosong'
+					},
+				}
+			},
+			jurusan: {
+				validators: {
+					notEmpty: {
+						message: 'Tidak Boleh Kosong'
+					},
+				}
+			}
+		}
+	})
+});
+</script>
+
+<!--Icons-->
+<script src="js/lumino.glyphs.js"></script>
+
+<!--[if lt IE 9]>
+<script src="js/html5shiv.js"></script>
+<script src="js/respond.min.js"></script>
+<![endif]-->
+
+</head>
+
+<body>
+	<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#sidebar-collapse">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="#"><img src="../images/logolsp.png" alt="" height="30"><span><?php echo " ".$namaxaplsatu ;?></a>
+                                <a class="user-menu" href="#"><img src="../images/logobnsp.png" alt="" height="30"><span></a>
+				
+			</div>
+							
+		</div><!-- /.container-fluid -->
+	</nav>
+		
+	<div id="sidebar-collapse" class="col-sm-3 col-lg-2 sidebar">
+		<!--<form role="search">
+			<div class="form-group">
+				<input type="text" class="form-control" placeholder="Search">
+			</div>
+		</form>-->
+		<ul class="nav menu">
+			<li><a href="pilihskema.php"><svg class="glyph stroked paperclip"><use xlink:href="#stroked-paperclip"/></svg>Pilih SKema</a></li>
+			<li><a href="pilihunit.php"><svg class="glyph stroked chain"><use xlink:href="#stroked-chain"/></svg>Pilih Unit</a></li>
+			<li class="active"><a href="dashsiswa.php"><svg class="glyph stroked tag"><use xlink:href="#stroked-tag"/></svg>FR.APL. 1</a></li>
+			<li class="parent">
+			<li><a href="apl2.php"><svg class="glyph stroked line-graph"><use xlink:href="#stroked-line-graph"></use></svg></svg>FR.APL. 2</a></li>
+			<li><a href="portofolio.php"><svg class="glyph stroked pen tip"><use xlink:href="#stroked-pen-tip"/></svg>Portofolio</a></li>
+			<li><a href="testulis.php"><svg class="glyph stroked pen tip"><use xlink:href="#stroked-pen-tip"/></svg>FR.IA.05 Pertanyaan Tertulis</a></li>
+			<li><a href="mak5.php"><svg class="glyph stroked pen tip"><use xlink:href="#stroked-pen-tip"/></svg>FR.AK.03</a></li>
+			<li class="parent ">
+			<!--<li><a href="feedtes.php"><svg class="glyph stroked star"><use xlink:href="#stroked-star"/></svg>FeedBack</a></li>-->
+			<li><a href="statussaya.php"><svg class="glyph stroked map"><use xlink:href="#stroked-map"/></svg>Cek Status</a></li>
+			<li><a href="banding.php"><svg class="glyph stroked map"><use xlink:href="#stroked-map"/></svg>FR.AK.04 Banding</a></li>
+			<li><a href="rahasia.php"><svg class="glyph stroked map"><use xlink:href="#stroked-map"/></svg>FR.AK.01 Kerahsiaan</a></li>
+			<li><a href="ubahpassword.php"><svg class="glyph stroked key "><use xlink:href="#stroked-key"/></svg>Ubah Password</a></li>				
+			<li role="presentation" class="divider"></li>		
+			<li><a href="../logout.php"><svg class="glyph stroked lock"><use xlink:href="#stroked-lock"/></svg> Logout</a></li>
+		</ul>
+
+	</div><!--/.sidebar-->
+		
+	<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">			
+		<div class="row">
+			<h4>Pengeloaan APL 1 ..</h4>
+                        
+</div><!--/.row-->
+					
+		<!--/.row-->
+				
+		<div class="row">
+			<div class="col-lg-12">
+<!--data nu baru -->
+
+<?php
+$op = isset($_GET['op']) ? $_GET['op'] : '';
+ 
+if ($op == "edit") 
+{
+   // proses untuk menampilkan data yang akan diedit pada form
+  $email= trim($_GET['email'] ?? '');
+$ceked="select * from skemasiswa where emailsiswa='$email' and statustest='N'";
+   $adaed=mysqli_query($conn,$ceked);
+   $ac=mysqli_fetch_array($adaed);
+   $idskemac = $ac['idskema'] ?? '';
+   if(mysqli_num_rows($adaed)>0){ 
+     $cek2="select * from unitsiswa where email='$email' and idskema='$idskemac'";
+     //echo $cek2;
+     $ada2=mysqli_query($conn,$cek2);
+     if(mysqli_num_rows($ada2)>0){ 
+		$jeniskelamin = '';
+$tmplahir = '';
+$tgllahir = '';
+$kebangsaan = '';
+$alamat = '';
+$kodepos = '';
+$rumah = '';
+$hp = '';
+$tlpkantor = '';
+$pendidikan = '';
+$lembaga = '';
+$jurusan = '';
+$emailuser2 = '';
+$poto = '';
+$nik = '';
+$tgl = '';
+        $cekdataxy = "SELECT * FROM apl1 WHERE email = '$email'";
+        $adaxy=mysqli_query($conn,$cekdataxy);
+		if(mysqli_num_rows($adaxy)>0){
+    	$querysz = "SELECT * FROM apl1 WHERE email = '$email'";
+        $hasilsz = mysqli_query($conn,$querysz);
+		$datasz  = mysqli_fetch_array($hasilsz);
+		$iduser=$datasz['idsiswa'];
+		$nama=$datasz['namasiswa'];
+		//	$pass=$data['password'];
+		//$telp=$data['notelp'];
+		$emailuser=$datasz['email'];
+		$tmplahir=$datasz['tmplahir'];
+		$tgllahir=$datasz['tgllahir'];
+		$jeniskelamin=$datasz['jeniskelamin'];
+        $kebangsaan=$datasz['kebangsaan'];
+        $alamat=$datasz['alamat'];
+        $kodepos=$datasz['kodepos'];
+        $rumah=$datasz['tlprumah'];
+		$hp=$datasz['hp'];
+        $tlpkantor=$datasz['tlpkantor'];
+        $emailuser=$email;
+        $pendidikan=$datasz['pendidikan'];
+        $lembaga=$datasz['namalembaga'];
+        $jurusan=$datasz['jurusan'];
+        $emailuser2=$datasz['email2'];
+        $poto=$datasz['poto'];
+        $nik=$datasz['nik'];
+        
+        $tgl = date("d-m-Y", strtotime($tgllahir));
+        //echo $tgllahir."lklas".$tgl;
+     	}
+
+        else {
+        $querysy = "SELECT * FROM users WHERE username = '$email'";
+        $hasilsy = mysqli_query($conn,$querysy);
+   		$datasy  = mysqli_fetch_array($hasilsy);
+   		$iduser=$datasy['id'];
+	   	$nama=$datasy['nama'];
+	   //	$pass=$data['password'];
+	   	//$telp=$data['notelp'];
+	   $emailuser=$datasy['username'];
+           //$emailuser2=$data['email2'];
+  		}
+   		// echo $iduser;
+ 		//echo "<form name='myform' method='post' action='".$_SERVER['PHP_SELF']."??op=edit'>";
+ 
+		echo "<form id=\"formContoh\" method=\"post\" enctype=\"multipart/form-data\" action=\"".$_SERVER['PHP_SELF'].
+        "?op=update\">";
+		?>
+		<div class="table-responsive">
+        <table class="table table-bordered" style="border: 2px solid #000;">
+            <tr>
+                <td width="20%" rowspan="3" class="text-center"><img src="../images/logolsp.png" width="100"></td>
+                <td width="40%" rowspan="3" class="text-center"><h4><b>FORMULIR PERMOHONAN SERTIFIKASI KOMPETENSI</b></h4></td>
+                <td width="15%">No. Dokumen</td>
+                <td width="25%">: MUK/247/LSPCBN/2024</td>
+            </tr>
+            <tr>
+                <td>Edisi / Revisi</td>
+                <td>: 01 / 00</td>
+            </tr>
+            <tr>
+                <td>Berlaku Sejak</td>
+                <td>: 19 Oktober 2024</td>
+            </tr>
+        </table>
+
+        <table class="table table-bordered" style="background-color: #f9f9f9;">
+            <tr style="background-color: #d9edf7;">
+                <td colspan="3"><b>Bagian 1 : Rincian Data Pemohon Sertifikasi</b></td>
+            </tr>
+            <tr>
+                <td colspan="3"><b>a. Data Pribadi</b></td>
+            </tr>
+            <tr>
+                <td width="30%">Nama Lengkap</td>
+                <td colspan="2"><input type="text" name="nama" class="form-control" value="<?php echo $nama; ?>" required></td>
+            </tr>
+            <tr>
+                <td>No. KTP/NIK</td>
+                <td colspan="2"><input type="text" name="nik" class="form-control" value="<?php echo $nik; ?>" required></td>
+            </tr>
+            <tr>
+                <td>Tempat / Tgl. Lahir</td>
+                <td><input type="text" name="tmplahir" class="form-control" value="<?php echo $tmplahir; ?>" placeholder="Tempat Lahir"></td>
+                <td><input type="text" name="tanggal" id="tanggal" class="form-control" value="<?php echo $tgl; ?>" placeholder="DD-MM-YYYY"></td>
+            </tr>
+            <tr>
+                <td>Jenis Kelamin</td>
+                <td colspan="2">
+                    <label class="radio-inline"><input type="radio" name="jk" value="lk" <?php echo ($jeniskelamin=='lk')?'checked':''; ?>> Laki-laki</label>
+                    <label class="radio-inline"><input type="radio" name="jk" value="pr" <?php echo ($jeniskelamin=='pr')?'checked':''; ?>> Perempuan</label>
+                </td>
+            </tr>
+            <tr>
+                <td>Kebangsaan</td>
+                <td colspan="2"><input type="text" name="kebangsaan" class="form-control" value="<?php echo $kebangsaan; ?>"></td>
+            </tr>
+            <tr>
+                <td>Alamat Rumah</td>
+                <td colspan="2"><textarea name="alamat" class="form-control"><?php echo $alamat; ?></textarea></td>
+            </tr>
+            <tr>
+                <td>Kode Pos</td>
+                <td colspan="2"><input type="text" name="kodepos" class="form-control" value="<?php echo $kodepos; ?>"></td>
+            </tr>
+            <tr>
+                <td>No. Telepon/HP</td>
+                <td>Rumah: <input type="text" name="rumah" class="form-control" value="<?php echo $rumah; ?>"></td>
+                <td>HP: <input type="text" name="hp" class="form-control" value="<?php echo $hp; ?>" required></td>
+            </tr>
+            <tr>
+                <td>E-mail Aktif</td>
+                <td colspan="2"><input type="email" name="emailuser2" class="form-control" value="<?php echo $emailuser2; ?>" required></td>
+            </tr>
+            <tr>
+                <td>Kualifikasi Pendidikan</td>
+                <td colspan="2"><input type="text" name="pendidikan" class="form-control" value="<?php echo $pendidikan; ?>"></td>
+            </tr>
+
+            <tr style="background-color: #eee;">
+                <td colspan="3"><b>b. Data Pekerjaan Sekarang</b></td>
+            </tr>
+            <tr>
+                <td>Nama Lembaga/Sekolah</td>
+                <td colspan="2"><input type="text" name="lembaga" class="form-control" value="<?php echo $lembaga; ?>"></td>
+            </tr>
+            <tr>
+                <td>Jurusan</td>
+                <td colspan="2"><input type="text" name="jurusan" class="form-control" value="<?php echo $jurusan; ?>"></td>
+            </tr>
+            <tr>
+                <td>No. Telp Kantor/Sekolah</td>
+                <td colspan="2"><input type="text" name="kantor" class="form-control" value="<?php echo $tlpkantor; ?>"></td>
+            </tr>
+        </table>
+
+        <table class="table table-bordered">
+            <tr style="background-color: #d9edf7;">
+                <td colspan="4"><b>Bagian 2 : Data Sertifikasi</b></td>
+            </tr>
+            <tr>
+                <td width="30%">Judul Skema</td>
+                <td colspan="3"><b>PEMROGRAM JUNIOR (JUNIOR CODER)</b></td>
+            </tr>
+            <tr>
+                <td>Nomor Skema</td>
+                <td colspan="3"><b>SKM-LSPCBN-247-05</b></td>
+            </tr>
+            <tr class="text-center" style="background-color: #eee;">
+                <td width="5%">No.</td>
+                <td width="20%">Kode Unit</td>
+                <td colspan="2">Judul Unit Kompetensi</td>
+            </tr>
+            <tr><td>1</td><td>J.6204100.004.02</td><td colspan="2">Menggunakan Struktur data</td></tr>
+            <tr><td>2</td><td>J.6204100.009.01</td><td colspan="2">Menggunakan Spesifikasi Program</td></tr>
+            <tr><td>3</td><td>J.6204100.010.01</td><td colspan="2">Menerapkan Perintah Eksekusi Bahasa Pemrograma Berbasis Teks, Grafik dan Multimedia</td></tr>
+            <tr><td>4</td><td>J.6204100.016.01</td><td colspan="2">Menulis Kode Program dengan Prinsip Sesuai Guidelines dan Best Practices</td></tr>
+            <tr><td>5</td><td>J.6204100.017.02</td><td colspan="2">Mengimplementasikan Pemrograman Terstruktur</td></tr>
+            <tr><td>6</td><td>J.6204100.023.02</td><td colspan="2">Membuat Dokumen Kode Program</td></tr>
+            <tr><td>7</td><td>J.6204100.025.02</td><td colspan="2">Melakukan Debugging</td></tr>
+            <tr><td>8</td><td>J.6204100.033.02</td><td colspan="2">Melaksanakan Pengujuan Unit Program</td></tr>
+        </table>
+
+        <table class="table table-bordered">
+            <tr style="background-color: #d9edf7;">
+                <td colspan="4"><b>Bagian 3 : Bukti Kelengkapan Pemohon</b></td>
+            </tr>
+            <tr class="text-center" style="background-color: #eee;">
+                <td width="5%">No.</td>
+                <td>Bukti Persyaratan Dasar</td>
+                <td width="10%">Ada</td>
+                <td width="15%">Tidak Ada</td>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>Foto copy kartu pelajar SMK Negeri 1 Cibinong RPL</td>
+                <td class="text-center"><input type="checkbox" name="bukti1"></td>
+                <td class="text-center"><input type="checkbox" name="bukti1_no"></td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>Fotocopy Raport Semester 1 – 5</td>
+                <td class="text-center"><input type="checkbox" name="bukti2"></td>
+                <td class="text-center"><input type="checkbox" name="bukti2_no"></td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>FC. Sertifikat PKL / Surat Keterangan PKL</td>
+                <td class="text-center"><input type="checkbox" name="bukti3"></td>
+                <td class="text-center"><input type="checkbox" name="bukti3_no"></td>
+            </tr>
+        </table>
+    </div>
+
+    <input type="hidden" name="iduser" value="<?php echo $iduser; ?>">
+    <input type="hidden" name="emailuser" value="<?php echo $emailuser; ?>">
+    <div class="text-center">
+        <button type="submit" class="btn btn-primary btn-lg" style="width: 200px;">SIMPAN PERMOHONAN</button>
+    </div>
+    
+    </form>
+    <?php
+	 }
+}
+}
+
+else if ($op == "update")
+	{
+ 
+       		// proses untuk updating data setelah diedit 
+        	$iduser = $_POST['iduser'];        
+		   //$iduser=$data['id_user'];
+		   	$nama=$_POST['nama'];
+		   	$emailuser=$_POST['emailuser'];
+		   	$tmplahir=$_POST['tmplahir'];
+			$tgllahir=$_POST['tanggal'];
+		    $jeniskelamin = isset($_POST['jk']) ? substr($_POST['jk'], 0, 1) : 'L';
+			$kebangsaan=$_POST['kebangsaan'];
+		    $alamat=$_POST['alamat'];
+		    $kodepos=$_POST['kodepos'];
+		    $tlprumah=$_POST['rumah'];
+			$hp=$_POST['hp'];
+        	$tlpkantor=$_POST['kantor'];
+		    $pendidikan=$_POST['pendidikan'];
+		    $lembaga=$_POST['lembaga'];
+		    $jurusan=$_POST['jurusan'];
+		    $email=trim($_POST['emailuser']);
+            $email2=trim($_POST['emailuser2']);
+            $nik=$_POST['nik'];        
+		    $my_date = date('Y-m-d', strtotime($tgllahir));
+		    $cekdata1 = "SELECT * FROM apl1 WHERE email = '$unameaplsatu'";
+   			$ada1=mysqli_query($conn,$cekdata1);
+   				if(mysqli_num_rows($ada1)>0){      
+					$query = "UPDATE apl1 SET namasiswa='$nama',tmplahir='$tmplahir',tgllahir='$my_date',jeniskelamin='$jeniskelamin',kebangsaan='$kebangsaan', alamat='$alamat', kodepos='$kodepos', tlprumah='$tlprumah', hp='$hp', tlpkantor='$tlpkantor', email='$email', pendidikan='$pendidikan', namalembaga='$lembaga',jurusan='$jurusan',email2='$email2',nik='$nik' WHERE email = '$email'";		} else 
+        		{
+					$nama_foto = '';
+					$notelp = isset($_POST['notelp']) ? $_POST['notelp'] : ''; // Mengambil data input 'notelp'
+					if (empty($jeniskelamin)) {
+    $jeniskelamin = "-"; // Atau nilai default lain yang diizinkan database
+}
+       			$query = "INSERT INTO apl1 (
+    id_user, nik, namasiswa, jurusan, kebangsaan, 
+    tmplahir, tgllahir, jeniskelamin, alamat, kodepos, 
+    notelp, pendidikan_terakhir, email, email2, validasiapl1, 
+    tlprumah, hp, tlpkantor, pendidikan, namalembaga, idasesi
+) VALUES (
+    '$iduser', '$nik', '$nama', '$jurusan', '$kebangsaan', 
+    '$tmplahir', '$my_date', '$jeniskelamin', '$alamat', '$kodepos', 
+    '$notelp', '$pendidikan', '$email', '$email2', 'N', 
+    '$tlprumah', '$hp', '$tlpkantor', '$pendidikan', '$lembaga', '$iduser'
+)";
+ 		        }
+       
+				//echo $query;
+				$hasil = mysqli_query($conn,$query);	
+ 			       if ($hasil) { //echo "Proses Update Biodata Sukses , DAN  <font color=red> ".$potopes."</font>"; 
+				?>				
+				<div class="container">
+			  	<div class="alert alert-success">
+			    	<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                <strong>Biodata Sukses di simpan !</strong></div>
+				</div>
+				<?php }
+                               
+ 			       else { echo "<p>Proses Update Gagal</p>";}
+        
+     }
+	 else if ($op == "pengajuanserti")
+     {
+		$emailuser=trim($unameaplsatu);
+		$sqlserti  = "SELECT * FROM users WHERE username='$emailuser'";
+    $shasilserti = mysqli_query($conn, $sqlserti);
+    $sdataserti  = mysqli_fetch_array($shasilserti);
+    $tgluserserti = $sdataserti['kode']; 
+    $namap = $sdataserti['nama']; // Sesuaikan dengan nama kolom di tabel users Anda
+    $idp = $sdataserti['id'];     
+	$tgluserserti = $sdataserti['kode'];
+if (empty($tgluserserti)) {
+    echo "<div class='container'><div class='alert alert-warning'><strong>Tanggal Belum di Set</strong> Hubungi Asesor atau bagian LSP.</div></div>";
+    return;
+}
+		$cektgld="select * from settanggal where status='A' AND tanggal='$tgluserserti'";
+        $adaserti=mysqli_query($conn,$cektgld);
+   	if(mysqli_num_rows($adaserti)>0){
+   		$ckuppoto="select email,buktiapl1 from apl1 where email='$emailuser' ";
+   		$ckuppotoa=mysqli_query($conn,$ckuppoto);
+   		$ckuppotob=mysqli_fetch_array($ckuppotoa);
+   		$ckuppotoc=strlen($ckuppotob['buktiapl1']);
+   		if($ckuppotoc>0){
+
+			$emailuser=trim($unameaplsatu);
+			$sqlxa="select * from users where username='$emailuser'";
+			$shasilxa=mysqli_query($conn,$sqlxa);
+			$sdataxa=mysqli_fetch_array($shasilxa);
+			$namap=$sdataxa['nama'];
+			$idp=$sdataxa['id'];
+			$cekxa="select * from skemasiswa where emailsiswa='$emailuser'";// and statustesp='N'";
+			//echo $cek;
+			 //$ada=mysqli_query($conn,$cek);		
+			$adaxa=mysqli_query($conn,$cekxa);
+			if(mysqli_num_rows($adaxa)>0){
+			$dataxa  = mysqli_fetch_array($adaxa);
+			$skema=$dataxa['idskema'];
+			$ske="select * from skema where id='$skema'";
+  			$ske1=mysqli_query($conn,$ske);
+  			$ske2=mysqli_fetch_array($ske1);
+  			$namaskema=$ske2['nama_skema'];
+			$sqlunit="select unitsiswa.idunit,unitsiswa.idskema,unitsiswa.idadsesi,unit.kodeunit,unit.namaunit from unitsiswa inner join unit on unitsiswa.idunit=unit.idunit where unitsiswa.idskema='$skema' and unitsiswa.idadsesi='$idp'";
+			//echo $sqlunit;
+			$execunit=mysqli_query($conn,$sqlunit);
+			echo "<table width=95% class=demo-table><tr><td colspan=2> <strong>Nama Skema : $namaskema </strong></td></tr><tr><th>Kode Unit (terpilih)</td><th>Nama Unit </th></tr>";
+			while ($listunit = mysqli_fetch_array($execunit))
+   				{
+ 	  				echo "<tr><td>".$listunit['kodeunit']."</td><td>".$listunit['namaunit']."</td></tr>";
+   				}
+ 				echo "</table>";
+
+
+			echo "<form id=\"formContoh\" method=\"post\" action=\"".$_SERVER['PHP_SELF'].
+        "?op=simpanpermohonan\" onSubmit=\"return confirm('Apakah yakin sudah MEMILIH semua dan ingin disimpan ??')\" >";
+			echo "<input type=hidden name=email value='$emailuser'>";
+			echo "<input type=hidden name=namap value='$namap'>";
+			echo "<input type=hidden name=idp value='$idp'>";
+			echo"
+			<div class=form-group><strong></strong>
+			<div class=dynamiclabel>
+			<input type=hidden name=skema value='$skema' readonly>
+			</div>
+			</div>";
+
+			$cekpermohonan="select * from permohonan where email='$emailuser' and idskema='$skema' and tanggal='$tgluserserti'";
+			$cekpermohonana=mysqli_query($conn,$cekpermohonan);
+			$cekpermohonanc=mysqli_num_rows($cekpermohonana);
+
+            $vrp = ''; $vpp = ''; $vrc = ''; $vsr = ''; $vla = '';
+			$vun = ''; $vkl = ''; $vok = ''; $vkk = '';
+			$vtsi = ''; $vtk = '';
+			$vsk = ''; $vsp = ''; $vss = ''; $vre = ''; $vso = '';
+			$vpr = ''; $vsi = ''; $vtkk = '';
+			$lainnyab = '';
+			$tanggalp = '';
+			$tukp = ''; 
+
+			if ($cekpermohonanc>0)
+			{
+			$cekpermohonanb=mysqli_fetch_array($cekpermohonana);
+			$dtasesemen=explode(",",$cekpermohonanb['tujuanasesmen']);
+			$lainnyab=$cekpermohonanb['lainnya'];
+			$tanggalp=$cekpermohonanb['tanggalp'];
+
+			$tukp=$cekpermohonanb['tuk'];
+			//echo "lksld".$tukp;
+			
+			if($dtasesemen[0]=='rp')
+			{
+				$vrp='checked';
+			}
+			else 
+			{
+				$vrp=' ';	
+			}
+
+
+			if($dtasesemen[1]=='pp')
+			{
+				$vpp='checked';
+			}
+			else 
+			{
+				$vpp=' ';	
+			}
+
+			if($dtasesemen[2]=='rc')
+			{
+				$vrc='checked';
+			}
+			else 
+			{
+				$vrc=' ';	
+			}
+			if($dtasesemen[3]=='sr')
+			{
+				$vsr='checked';
+			}
+			else 
+			{
+				$vsr=' ';	
+			}
+
+			if($dtasesemen[4]=='la')
+			{
+				$vla='checked';
+			}
+			else 
+			{
+				$vla=' ';	
+			}
+
+			$dsasesemen=explode(",",$cekpermohonanb['sertifikasi']);
+
+			if($dsasesemen[0]=='un')
+				{
+					$vun='checked';
+				}
+				else 
+				{
+					$vun=' ';
+					}
+				
+				if($dsasesemen[1]=='kl')
+				{
+					$vkl='checked';
+				}
+				else 
+				{
+					$vkl=' ';
+				}
+				if($dsasesemen[2]=='ok')
+				{
+					$vok='checked';
+				}
+				else 
+				{
+					$vok=' ';
+				}
+
+			if($dsasesemen[3]=='kk')
+			{
+				$vkk='checked';
+			}
+			else 
+			{
+				$vkk=' ';
+			}
+
+			$dkasesemen=explode(",",$cekpermohonanb['kontekasesmen']);
+			//echo $dkasesemen;
+			 if($dkasesemen[0]=='tsi')
+				{
+					$vtsi='checked';
+				}
+				else 
+				{
+					$vtsi=' ';
+				}
+			if($dkasesemen[1]=='tk')
+				{
+					$vtk='checked';
+				}
+				else 
+				{
+					$vtk=' ';
+				}
+
+
+			$daasesemen=explode(",",$cekpermohonanb['acuanp']);
+			if($daasesemen[0]=='sk')
+			{
+				$vsk='checked';
+			}
+			else 
+			{
+				$vsk=' ';
+			}
+			if($daasesemen[1]=='sp')
+			{
+				$vsp='checked';
+			}
+			else 
+			{
+				$vsp=' ';
+			}
+
+			if($daasesemen[2]=='ss')
+			{
+				$vss='checked';
+			}
+			else 
+			{
+				$vss=' ';
+			}
+			if($daasesemen[3]=='re')
+			{
+				$vre='checked';
+			}
+			else 
+			{
+				$vre=' ';
+			}
+			if($daasesemen[4]=='so')
+			{
+				$vso='checked';
+			}
+			else 
+			{
+				$vso=' ';
+			}
+
+			$dkarasesemen=explode(",",$cekpermohonanb['karakteristik']);
+			if($dkarasesemen[0]=='pr')
+			{
+				$vpr='checked';
+			}
+			else 
+			{
+				$vpr=' ';
+			}
+				if($dkarasesemen[1]=='si')
+			{
+				$vsi='checked';
+			}
+			else 
+			{
+				$vsi=' ';
+			}
+			if($dkarasesemen[2]=='tkk')
+			{
+				$vtkk='checked';
+			}
+			else 
+			{
+				$vtkk=' ';
+			}
+
+
+		}
+?>
+		<table class="demo-table">
+		<!--<tr><td colspan="3"><strong>Skema : <?php echo $namaskema; ?></strong></td></tr>-->
+		<tr><td bgcolor='#006699' align='left'><strong> Bagian 2. Data Permohonan Sertifikasi</strong> </td></tr><tr><td>
+		<div class="form-group">
+    <label><b>Tujuan Asesmen:</b></label><br>
+    <input type="checkbox" name="tujuan_asesmen" value="Sertifikasi"> Sertifikasi <br>
+    <input type="checkbox" name="tujuan_asesmen" value="PKT"> Pengakuan Kompetensi Terkini (PKT) <br>
+    <input type="checkbox" name="tujuan_asesmen" value="RPL"> Rekognisi Pembelajaran Lampau (RPL) <br>
+</div>
+		<input type="text" name="lain" value=" <?php echo $lainnyab; ?>">    
+		<div class="mt-4">
+    <h5><b>Bagian 3 : Bukti Kelengkapan Pemohon</b></h5>
+    <table class="table table-bordered">
+        <thead class="bg-light">
+            <tr>
+                <th>No</th>
+                <th>Bukti Persyaratan</th>
+                <th>Upload File</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td>FC Kartu Pelajar (XII RPL SMKN 1 Cibinong)</td>
+                <td><input type="file" name="bukti_kartu_pelajar" class="form-control-file"></td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>FC Raport Semester 1 – 5</td>
+                <td><input type="file" name="bukti_raport" class="form-control-file"></td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>Sertifikat PKL / Surat Keterangan PKL</td>
+                <td><input type="file" name="bukti_sertifikat_pkl" class="form-control-file"></td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>FC Kartu Keluarga / KTP</td>
+                <td><input type="file" name="bukti_kk_ktp" class="form-control-file"></td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>Pas Photo 3 X 4 (2 Lembar)</td>
+                <td><input type="file" name="bukti_pas_foto" class="form-control-file"></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+		</div>
+		</div>
+		<div class="form-group"><strong>Skema Sertifikasi:</strong>
+		<div class="dynamiclabel">
+		<input type="checkbox" name="skemasa" value="un" <?php echo $vun; ?>> Unit
+		<input type="checkbox" name="skemasb" value="kl" <?php echo $vkl; ?>> Klaster
+		<input type="checkbox" name="skemasc" value="ok" <?php echo $vok; ?>> Okupasi
+		<input type="checkbox" name="skemasd" value="kk" <?php echo $vkk; ?>> KKNI
+		</div>
+		</div>
+		<div class="form-group"><strong>Kontek asesmen:</strong>
+		<div class="dynamiclabel">
+		<input type="checkbox" name="kasesmena" value="tsi" <?php echo $vtsi; ?>> TUK Simulasi
+		<input type="checkbox" name="kasesmenb" value="tk" <?php echo $vtk; ?>> Tempat Kerja
+	   ,dengan karakter
+		<input type="checkbox" name="karaktera" value="pr" <?php echo $vpr; ?>> Produk
+		<input type="checkbox" name="karakterb" value="si" <?php echo $vsi; ?>> Sistem
+		<input type="checkbox" name="karakterc" value="tkk" <?php echo $vtkk; ?> > Tempat Kerja
+		</div>
+		</div>
+		<div class="form-group"><strong>Acuan Pembanding:</strong>
+		<div class="dynamiclabel">
+   		<input type="checkbox" name="acuana" value="sk" <?php echo $vsk; ?>> Standar Kompetensi
+   		<input type="checkbox" name="acuanb" value="sp" <?php echo $vsp; ?>> Standar Produk
+   		<input type="checkbox" name="acuanc" value="ss" <?php echo $vss; ?>> Standar sistem
+   		<input type="checkbox" name="acuand" value="re" <?php echo $vre; ?>> Regulasi sistem
+   		<input type="checkbox" name="acuane" value="so" <?php echo $vso; ?>> SOP
+		</div>
+		</div>
+		<!--<?php echo "lskdlsklsd".$tukp; ?>-->
+    
+		<div class="form-group"><strong>TUK :</strong>
+		<select class="form-control" id="idtuk" name="idtuk" placeholder="TUK" autofocus>
+        
+		<?php
+	  	$tampil=mysqli_query($conn,"SELECT * FROM tuk");
+		while($r=mysqli_fetch_array($tampil)){
+			if($r['idtuk']==$tukp) {
+            
+			echo "<option value=$r[idtuk] selected>$r[namatuk]</option> ";}
+			else 
+			{
+			 echo "<option value=$r[idtuk]>$r[namatuk]</option> ";	
+			}
+		}
+         
+	?>
+		</select>   
+		</div>
+      
+        <div class="form-group"><strong>Tanggal Pelaksanaan :</strong>
+    	<input type="text" name="tglpel" id="tanggal" placeholder="Tanggal Pelaksaan" class="form-control"  value="<?php echo $tanggalp ;?>"required/>
+        </div>
+         <div class="form-group"><strong>Tanggal Regestrisai :</strong>
+    	<input type="text" name="tanggalp" placeholder="Tanggal Reg" class="form-control" value=" <?php echo $tgluserserti ; ?>" readonly/>
+        </div> 
+
+		<div class="mt-4 mb-5">
+    <button type="submit" name="simpan_apl1" class="btn btn-primary btn-lg">
+        <i class="fa fa-save"></i> Simpan Permohonan APL 01
+    </button>
+    <button type="reset" class="btn btn-danger btn-lg">
+        <i class="fa fa-undo"></i> Reset
+    </button>
+</div>
+        
+<!--        <div class="form-group"><strong>Tanggal : (Sesuaikan dengan jadwal)</strong>
+        <select class="form-control" name="tanggal" placeholder="Skema">
+          <?php
+          $tampil=mysqli_query($conn,"SELECT * FROM  settanggal where status='A' group by tanggal ");
+			while($r=mysqli_fetch_array($tampil)){
+			echo "<option value=$r[tanggal]>$r[tanggal] -- $r[ket]</option>";}
+			echo "</select";
+
+           ?>
+        --> 
+		</div>
+		</tr><tr><td colspan="3"><input type="submit" id="gobutton" value="Simpan" class="button"></td></tr></td></tr></table>
+
+		<?php
+		} else { 
+		?>				
+				<div class="container">
+			  	<div class="alert alert-warning">
+			    	<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+			    	<strong>Skema Belum Di pilih!</strong> ....
+				</div>
+				<?php        }
+      
+
+			}else 
+			{
+				?>				
+				<div class="container">
+			  	<div class="alert alert-warning">
+			    	<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+			    	<strong>Bukti pendukung belum diupload...</strong>
+				</div>
+				<?php
+			}
+
+
+
+      }else {
+	?>				
+				<div class="container">
+			  	<div class="alert alert-warning">
+			    	<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+			    	<strong>Tanggal Belum di Set</strong> Hubungi Asesor atau bagian LSP....
+				</div>
+				<?php  }
+}
+
+else if ($op == "simpanpermohonan")
+     {
+		$email=trim($_POST['email']);
+		$ids=$_POST['skema'];
+		$idp=$_POST['idp'];
+		$namap=$_POST['namap'];
+		$lain=$_POST['lain'];
+		$tasesmen = ($_POST['tasesmena'] ?? '').",".(($_POST['tasesmenb'] ?? '')).",".(($_POST['tasesmenc'] ?? '')).",".(($_POST['tasesmend'] ?? '')).",".(($_POST['tasesmene'] ?? ''));
+		$skemas = ($_POST['skemasa'] ?? '').",".(($_POST['skemasb'] ?? '')).",".(($_POST['skemasc'] ?? '')).",".(($_POST['skemasd'] ?? ''));
+		$kasesmen = ($_POST['kasesmena'] ?? '').",".(($_POST['kasesmenb'] ?? ''));
+		$karakter = ($_POST['karaktera'] ?? '').",".(($_POST['karakterb'] ?? '')).",".(($_POST['karakterc'] ?? ''));
+		$acuan = ($_POST['acuana'] ?? '').",".(($_POST['acuanb'] ?? '')).",".(($_POST['acuanc'] ?? '')).",".(($_POST['acuand'] ?? '')).",".(($_POST['acuane'] ?? ''));
+		$tuk=$_POST['idtuk'];
+        $tanggal=$_POST['tanggalp'];
+        $tglp=$_POST['tglpel'];
+        $tglpp = date('Y-m-d', strtotime($tglp));
+        //echo "skema".$acuan;
+		$cek="select * from permohonan where email='$email' and idskema='$ids' and tanggal='$tanggal'";
+     	//echo $cek;
+     	$ada=mysqli_query($conn,$cek);
+		if(mysqli_num_rows($ada)>0){
+
+			$sqlupdate="update permohonan set tujuanasesmen='$tasesmen', lainnya='$lain',sertifikasi='$skemas',kontekasesmen='$kasesmen',karakteristik='$karakter',acuanp='$acuan',tuk='$tuk' where email='$email' and idskema='$ids' and tanggal='$tanggal' and tanggalp='$tglpp'";
+			$sqlupdatea=mysqli_query($conn,$sqlupdate);
+			//$sqlupdateb=
+			//echo $sqlupdate;
+			if($sqlupdatea)
+			{
+    		?>				
+				<div class="container">
+			  	<div class="alert alert-success">
+			    	<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+			    	<strong>Berhasil Update  !</strong> ....
+			  	</div>
+				</div>
+				<?php 
+			}
+				}
+    	else {
+
+$query = "INSERT INTO permohonan (idskema, email, id_user, tujuanasesmen, lainnya, sertifikasi, kontekasesmen, karakteristik, acuanp, tuk, tanggal, tanggalp, statuspmt) 
+          VALUES ('$ids', '$email', '$idp', '$tasesmen', '$lain', '$skemas', '$kasesmen', '$karakter', '$acuan', '$tuk', '$tanggal', '$tglpp', 'N')";
+      //echo $query;
+      $berhasil = mysqli_query($conn,$query);
+      if ($berhasil) { ?>
+		<div class="container">
+			  	<div class="alert alert-success">
+			    	<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+			    	<strong>Penyimpanan Data Berhasil  !</strong> ....
+			  	</div>
+				</div>	<?php }
+	
+       else { ?><div class="container">
+			  	<div class="alert alert-warning">
+			    	<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+			    	<strong>Penyimpanan data gagal !</strong> ....
+			  	</div>
+				</div> <?php }
+	}
+	}
+
+else if ($op=="kompetensi")
+
+   {
+
+                $emailuser=trim($unameaplsatu);
+		$cek="select * from skemasiswa where emailsiswa='$emailuser' and statustesp='N'";
+		//echo $cek;
+ 		//$ada=mysqli_query($conn,$cek);
+		$ada=mysqli_query($conn,$cek);
+		if(mysqli_num_rows($ada)>0){
+			$data  = mysqli_fetch_array($ada);
+    			//$b=mysql_fetch_rows($ada);
+			$skema=$data['idskema'];
+  			$ske="select * from skema where idskema='$skema'";
+  			$ske1=mysqli_query($conn,$ske);
+  			$ske2=mysqli_fetch_array($ske1);
+  			$namaskema=$ske2['namaskema'];
+			$cekid="select * from users where username='$emailuser'";
+    			//echo $cekid;
+    			$cekid1=$ske1=mysqli_query($conn,$cekid);
+			$cekid2=mysqli_fetch_array($cekid1);
+    			$idasesi=$cekid2['id'];
+
+			echo "<form id=\"formContoh\" method=\"post\" action=\"".$_SERVER['PHP_SELF'].
+ 			       "?op=kompetensi1\">";
+			//echo "<form name=contoh method=post action=uploadgambar1.php enctype=multipart/form-data id=form-upload>";
+			echo "<input type=hidden name=email value='$emailuser'>";
+			echo "<input type=hidden name=idasesi value='$idasesi'>";
+
+
+			echo"
+			<div class=form-group><strong></strong>
+			   <div class=dynamiclabel>
+ 				<input type=hidden name=skema value='$skema' readonly>
+  			   </div>
+  			</div>";
+			?>
+			<table class=demo-table width=100%>
+			<!--<tr><td colspan="3"><strong>Skema : <?php echo $namaskema; ?></strong></td></tr>-->
+			<tr><th colspan='3'><strong> PILIH UNIT</strong> </th></tr>
+			<tr><th bgcolor='#006699'>Kode Unit</th><th bgcolor='#006699'>Nama Unit</th></tr>
+
+			<?php 
+			//$unit="Select * from unit where idskema='$skema'";
+			$sqlunit="select unitsiswa.idadsesi,unitsiswa.idunit,unit.kodeunit,unit.namaunit,unit.idskema from unitsiswa INNER JOIN unit on unitsiswa.idunit=unit.idunit where unitsiswa.idskema='$skema' and unitsiswa.idadsesi='$idasesi' order by unit.kodeunit";
+                        //echo $sqlunit;
+			$execunit=mysqli_query($conn,$sqlunit);
+
+                        
+
+			//echo $unit;
+			
+			$i = 0;
+			while ($unit2=mysqli_fetch_array($execunit)){
+				$dunit=$unit2['idunit'];
+				//$nunit=$unit2['namaunit'];
+				$kodeunit=$unit2['kodeunit'];
+				$namaunit=$unit2['namaunit'];
+                                $idskema=$unit2['idskema'];
+                                //$idasesiunit=$unit2['idasesi'];
+                                //$sqlbykel="select count(idelemen) as bykel from upload where idskema='$skema' AND idunit='$dunit' AND idasesi='$idasesi'"; 
+                                 
+                                $sqlunitupload="select upload.idskema,upload.idasesi,upload.idunit,idelemen from upload where idskema='$skema' AND idunit='$dunit' AND idasesi='$idasesi'";
+                                
+                                //echo $sqlunitupload;
+                                $execsqlunitup=mysqli_query($conn,$sqlunitupload);
+                                $execsqlunitup2=mysqli_fetch_array($execsqlunitup);
+                                $bykunit=mysqli_num_rows($execsqlunitup);
+	                        $ide=$execsqlunitup2['idunit'];
+                                $sqlelemenupload="select count(idelemen) as byk2 from elemen where idunit='$ide'";
+                                $execelemenupload=mysqli_query($conn,$sqlelemenupload);
+                                $execelemenupload2=mysqli_fetch_array($execelemenupload);
+                                //echo $sqlelemenupload;  
+                                $bykelemen=$execelemenupload2['byk2'];
+				if(mysqli_num_rows($execsqlunitup)>0 and $bykunit==$bykelemen){
+                                   $stada='disabled';
+                                   //echo $stada;
+                               }
+				else { $stada=' ';}
+                                
+				echo "<tr><td><input type=hidden name=idskema".$i." value='$idskema'><input type=hidden name=idunit".$i." value='$dunit'><input type=checkbox name=kodeunit".$i." value='$kodeunit'".$stada."> ".$kodeunit." </td><td>".$namaunit." </td>";
+
+
+
+				?>
+				<?php
+				$i++;
+				
+			}
+		//}
+			echo "<input type='hidden' name='n' value='".$i."' />";
+			?>
+
+		</form>
+		</td></tr><tr><td colspan="3"><input type="submit" id="gobutton" value="Lanjutkan" class="button"></td></tr></table>
+
+<?php } else { ?>				
+				<div class="container">
+			  	<div class="alert alert-warning">
+			    	<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+			    	<strong>Skema Belum Di pilih!</strong> ....
+				</div>
+				<?php  } 
+
+
+
+    }
+
+else if ($op == "kompetensi1")
+     {
+        $n = $_POST['n'];
+ 		$cc=0;
+        $i=0; 
+        $emailuser=trim($unameaplsatu);
+		$sql="select * from users where username='$emailuser'";
+		$shasil=mysqli_query($conn,$sql);
+		$sdata=mysqli_fetch_array($shasil);
+        $tgluser=$sdata['kode'];  
+	    $idasesi=$sdata['id'];    
+        $cektgl="select * from settanggal where status='A' AND tanggal='$tgluser'";
+		$ada=mysqli_query($conn,$cektgl);
+   	    if(mysqli_num_rows($ada)>0){
+		$cek="select * from skemasiswa where emailsiswa='$emailuser' and statustesp='N'";
+		$ada=mysqli_query($conn,$cek);
+        $adaada=mysqli_fetch_array($ada);
+        $skema=$adaada['idskema'];
+		if(mysqli_num_rows($ada)>0){
+		$cekpermohonan="Select * from permohonan where idskema='$skema' and email='$emailuser'";
+        $cekpermo=mysqli_query($conn,$cekpermohonan);
+		if(mysqli_num_rows($cekpermo)>0){
+		echo "<form id=\"formContoh\" method=\"post\" action=\"".$_SERVER['PHP_SELF'].
+ 			       "?op=kompetensi3\">";
+			//echo "<form name=contoh method=post action=uploadgambar1satuphoto.php enctype=multipart/form-data id=form-upload onSubmit=\"return confirm('Apakah yakin sudah MEMILIH semua dan ingin disimpan ??')\" >";
+			echo "<input type=hidden name=email value='$emailuser'>";
+			echo "<input type=hidden name=idasesi value='$idasesi'>";
+
+
+			echo"
+			<div class=form-group><strong></strong>
+			   <div class=dynamiclabel>
+ 				<input type=hidden name=skema value='$skema' readonly>
+  			   </div>
+  			</div>";
+	        ?>
+	<table class="demo-table">
+	<!--<tr><td colspan="3"><strong>Skema : <?php echo $namaskema; ?></strong></td></tr>-->
+	<tr><td bgcolor='#006699' align='left' colspan='3'><strong> Bagian 3. Bukti Pendukung</strong> </td></tr>
+	<tr><td>Elemen Kompetensi</td><td>Bukti Relevan</td><td>Upload</td></tr> <?php
+                $cc=0;
+                $ccc=0;
+		//echo $_POST['kodeunit'.$cc]."kkkkkk";
+		for ($c=0; $c<=$n-1; $c++)
+   		{
+                 //echo $c;
+
+     		 if (isset($_POST['idunit'.$c]))
+
+     		 {
+			  
+                       //echo $_POST['kodeunit'.$c];
+                       $pjng=strlen($_POST['kodeunit'.$c]);
+                       
+                    if ($pjng>0)
+                       	{ 
+			$ccc++;
+                    
+			?>
+                        
+                 <?php
+                      //echo "lklsdk".$c;
+                      //echo $ccc;
+                      if ($ccc <= 2 ){
+		      $idskema=$_POST['idskema'.$c];
+                      $idunitxx=$_POST['idunit'.$c];
+                      //echo $idskema;
+                       $unit="Select * from elemen where idskema='$idskema' and idunit='$idunitxx'";
+                        //echo $unit;
+			$unit1=mysqli_query($conn,$unit);
+		      
+			while ($unit2=mysqli_fetch_array($unit1)){
+			$dunit=$unit2['idunit'];
+			//$nunit=$unit2['namaunit'];
+			$delemen=$unit2['idelemen'];
+			$nelemen=$unit2['namaelemen'];
+			echo "<tr><td><input type=checkbox name=unit".$i." value='$delemen' checked> ".$nelemen." </td><td><input type=hidden name=eunit".$i." value='$dunit'><input type=checkbox name=buktia".$i." value='sk'>SK <input type=checkbox name=buktib".$i." value='sr'>SR <input type=checkbox name=buktic".$i." value='cp'>CP<input type=checkbox name=buktid".$i." value='jd'>JD <input type=checkbox name=buktie".$i." value='ws'>WS <input type=checkbox name=buktif".$i." value='de'>De <input type=checkbox name=buktig".$i." value='pe'>Pe<input type=checkbox id=buktih name=buktih".$i." value='l'>L  ";
+                        
+			?>
+			<?php
+			$i++;                        
+			?>
+                       
+			<!---</td><td><input type="file" accept="image/*" name="foto[]"/>-->
+			</td><td><input type="file" name="fotox2[]" disabled="disabled" />			
+			<?php
+			 }
+			} else {echo "<font color=red><strong>Anda memilih lebih dari 2 .. , Hanya 2 saja yang ditampilkan</strong></font>";}
+			
+			?>
+	                </td></tr><tr><td colspan="3">
+			<?php
+                        $cc++;
+			 
+                         } 
+			}
+			}
+			
+				        echo "<input type='hidden' name='n' value='".$i."' />";
+                        ?>			
+
+			                <div class="form-group"><strong>Tanggal Pelaksanaan :</strong>
+    	<input type="text" name="tglpelapl1" id="tanggal" placeholder="Tanggal Pelaksaan" class="form-control" required/>
+        </div>
+                <div class="form-group"><strong>Tanggal Regestrisai :</strong>
+    	        <input type="text" name="tglreg" placeholder="Tanggal Reg" class="form-control" value=" <?php echo $tgluser ; ?>" readonly/>
+                </div>
+
+                <!--</td></tr><tr><td colspan="3"><input type="file" name="foto" ><font color=red>File Berbentuk PDF dengan ukuran Maks 2MB dan namafile jangan menggunakan spasi</font></td></tr>-->
+		
+		<tr><td colspan="3"><input type="submit" id="gobutton" value="Simpan" class="button"></td></tr></table>
+
+		SK = Sertifikasi atau Kualifikasi(contoh : pelatihan, keahlian)</br>
+		SR = Surat referensi dari supervision/perusahaan mengenai pekerjaan anda</br>
+		CP = Contoh Pekerjaan yang pernah anda buat (produk jadi)</br>
+		JD = Job description dari perusahaan mengenai pekerjaan anda</br>
+		WS = Wawancara dengan supervisor , teman sebaya atau klien</br>
+		De = Demonstrasi pekerjaan/keterampilan yang dipersyaratkan</br>
+		Pe = Pengalaman Idustri (On teh job training, magang,kerja praktek,dll)</br>
+		 L  = Bukti-bukti lainnya yang relevan  
+		</form>
+		<?php   
+
+		           } else {  ?>				
+				<div class="container">
+			  	<div class="alert alert-warning">
+			    	<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+			    	<strong>Anda belum mengisi pengajuan sertifikasi</strong> ....
+				</div>
+				<?php }   
+                } else { 
+               ?>				
+				<div class="container">
+			  	<div class="alert alert-warning">
+			    	<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+			    	<strong>Anda belum memilih skema</strong> ....
+				</div>
+				<?php  
+            }
+		} else { ?>				
+				<div class="container">
+			  	<div class="alert alert-warning">
+			    	<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+			    	<strong>Tanggal Belum Di set !</strong> Hubungi asesor / LSP..
+				</div>
+				<?php  }
+			                                                                                         
+	}
+
+
+else if ($op == "kompetensi3")
+   {
+	$dup=0;
+    $suk=0;
+    $email=trim($_POST['email']);
+	$ids=$_POST['skema'];
+	$idasesi=$_POST['idasesi'];
+	$n = $_POST['n'];
+    $tgl=$_POST['tglreg'];
+	$tglpapl1=$_POST['tglpelapl1'];
+	$tglppapl1 = date('Y-m-d', strtotime($tglpapl1));
+        
+	for ($i=0; $i<=$n-1; $i++)
+    {
+      // echo $i;
+       
+       if (isset($_POST['unit'.$i]))
+       //echo $_POST['unit'.$i];
+     {
+     if (isset($_POST['buktia'.$i]) or isset($_POST['buktib'.$i]) or isset($_POST['buktic'.$i]) or isset($_POST['buktid'.$i]) or isset($_POST['buktie'.$i]) or isset($_POST['buktif'.$i]) or isset($_POST['buktig'.$i]) or isset($_POST['buktih'.$i]))
+     {	
+	   //echo $i;
+       	$unit = $_POST['unit'.$i];
+       	$eunit = $_POST['eunit'.$i];
+       	$bukti=$_POST['buktia'.$i];
+       	$bukti1=$_POST['buktib'.$i];
+		$bukti2=$_POST['buktic'.$i];
+       	$bukti3=$_POST['buktid'.$i];
+		$bukti4=$_POST['buktie'.$i];
+		$bukti5=$_POST['buktif'.$i];
+       	$bukti6=$_POST['buktig'.$i];
+       	$bukti7=$_POST['buktih'.$i];
+           
+       $allbukti=$bukti.",".$bukti1.",".$bukti2.",".$bukti3.",".$bukti4.",".$bukti5.",".$bukti6.",".$bukti7;
+       //echo "B".$allbukti;
+
+		$cekdata = "SELECT * FROM upload WHERE email = '$email' and idskema='$ids' and idunit='$eunit' and idelemen='$unit' and waktu='$tgl'";
+        // echo $cekdata;           
+            $ada=mysqli_query($conn,$cekdata);
+            if(mysqli_num_rows($ada)>0){
+                  $dup++;
+                   }
+             else {
+            	$ql="insert into upload (id,idskema,idasesi,email,idunit,idelemen,bukti,path,waktu,tanggalpapl1) value ('','$ids','$idasesi','$email','$eunit','$unit','$allbukti','$nama_foto','$tgl','$tglppapl1')";
+                 $sukses = mysqli_query($conn,$ql);
+                 if ($sukses){
+                    $suk++;
+                  }
+               }
+                
+
+       }
+     
+     }	
+    }
+          ?>				
+				<div class="container">
+			  	<div class="alert alert-warning">
+			    	<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+			    	<strong>Sukses = <?php echo $suk; ?> Duplikat = <?php echo $dup; ?></strong> ....
+				</div>
+				<?php
+}
+
+else if ($op == "uploadbukti")
+ {
+   $namab=$_GET['namas'];
+   //$iduserb=$_GET['id'];
+   $email=$_GET['email'];
+   $ckpotodulu = "SELECT email, poto FROM apl1 WHERE email='$email'";
+$ckpotodulua = mysqli_query($conn, $ckpotodulu);
+$ckpotodulub = mysqli_fetch_array($ckpotodulua);
+$ckpotoduluc = strlen($ckpotodulub['poto'] ?? '');
+// Ganti pengecekan di bawah
+if($ckpotoduluc > 0) {
+   $ceksyaps="select * from skemasiswa where emailsiswa='$email' "; // and statusapl2='N'"; //and statustesp='N';
+   
+   $ceksyapsa=mysqli_query($conn,$ceksyaps);
+   $ceksyapsb=mysqli_fetch_array($ceksyapsa);
+   $idskemasyac=$ceksyapsb['idskema'];   
+   $listsyps="select * from syarat where idskema='$idskemasyac' and kodesyarat='1'";
+   // echo $listsyps;
+	$listsyaps=mysqli_query($conn,$listsyps);
+ 
+	 echo "<table class=demo-table  width=90%>";
+	 echo "<tr><th colspan=2>Bukti kelengkapan persyaratan dasar permohonan</th></tr>";
+	 echo "<tr><th align=center bgcolor='#006699'>NO</th><th bgcolor='#006699'>Bukti persyaratan </th></tr>";
+	 $nom=1;
+	 $ii=0;
+	 while($listsybps=mysqli_fetch_array($listsyaps)){
+		$idsyarataps=$listsybps['idsyarat'];
+		echo "<tr><td>".$nom."</td>";
+		echo "<td>".$listsybps['syarat']."</td></tr>";
+		$nom++;
+	 } 
+	 echo "<table class=demo-table  width=90%>";
+	 echo "<tr><th colspan=2>Bukti kelengkapan kompetensi relevan</th></tr>";
+	 echo "<tr><th align=center bgcolor='#006699'>NO</th><th bgcolor='#006699'>Bukti persyaratan </th></tr>";
+	 $listsybbps="select * from syarat where idskema='$idskemasyac' and kodesyarat='2'";
+	 $listsyabps=mysqli_query($conn,$listsybbps);
+	 
+	 $nombps=1;
+	 $iibps=0;
+ 
+	 while($listsybbps=mysqli_fetch_array($listsyabps)){
+		$idsyaratabps=$listsybbps['idsyarat'];
+		echo "<tr><td>".$nombps."</td>";
+		echo "<td>".$listsybbps['syarat']."</td>
+		</tr>";
+		$nombps++;
+	 } 
+
+	   echo "<form id=\"formContoh\" method=\"post\" enctype=\"multipart/form-data\" action=\"".$_SERVER['PHP_SELF'].
+			"?op=uploadbuktipost\">";
+	   echo "<input type=hidden name=namas value=$namab>";
+	   //echo "<input type=text name=iduser value=$iduserb>";
+	   echo "<input type=hidden name=email value=$email>";
+	   echo "<table class=demo-table  width=80%>";
+	   echo "<th colspan=2><strong>Upload File Pendukung sesuai dengan syarat di atas </strong></th>";
+	   echo "<tr><td>Silahkan pilih File Pendukung <font color='red'> ( Ukuran file max 2MB dan type file pdf)</font></td><td> <input type='file' name='fotox4'/></td></tr>";
+	  echo "<tr><td colspan=2><input type='submit' id='gobutton' value='Kirim '></td></tr></table>";
+	 
+	  } else 
+	{
+	?>
+			<div class="container">
+			  <div class="alert alert-warning">
+			    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+			    <strong>Poto belum di upload ....</strong>
+			  </div>
+			</div> 
+			<?php	
+    }
+}
+
+ else if ($op == "uploadbuktipost")
+ { 
+    $nama=$_POST['namas'];
+    //$iduser=$_POST['iduser'];
+    $email=$_POST['email'];
+    //echo $nama;
+    $namasc=explode(" ", $nama);
+    if (empty($_FILES['fotox4']['name'])) {
+    echo "<div class='container'><div class='alert alert-warning'>File belum dipilih!</div></div>";
+    return;
+}
+$namaff=$_FILES['fotox4']['name'];
+$namaff=str_replace(" ", "", $namaff);
+    $dir_foto = "gambarimages/";
+    $namasd=$namasc[0];
+	$nama_foto ='apl1'.$email.$namaff;
+                     //echo  $nama_foto;
+    $ext = pathinfo( $nama_foto, PATHINFO_EXTENSION );
+	$ekstensi = array('pdf','PDF'); // Ektensi yg diterima
+               if( in_array( $ext, $ekstensi ) ) {
+          		if( $_FILES['fotox4']['size']<2000000 ) {
+                        if ( move_uploaded_file( $_FILES['fotox4']['tmp_name'], $dir_foto . $nama_foto ) ) { ?>
+					<div class="container">
+					  <div class="alert alert-success">
+						<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+						<strong>Sukses!</strong>file terkirim ...
+					  </div>
+					</div> <?php
+					$cekdata1p = "SELECT * FROM apl1 WHERE email = '$email'";
+					$ada1p=mysqli_query($conn,$cekdata1p);
+						if(mysqli_num_rows($ada1p)>0){      
+							$queryp = "UPDATE apl1 SET buktiapl1='$nama_foto' WHERE email = '$email'";	
+						$hasilp = mysqli_query($conn,$queryp);				
+						}
+						 }
+								else { ?>
+						<div class="container">
+						  <div class="alert alert-success">
+							<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+							<strong>Penyimpanan Gagal ..!</strong>Ukuran file terlalu besar
+						  </div>
+						</div> 
+						<?php	}
+						 } else { ?>
+						<div class="container">
+						  <div class="alert alert-warning">
+							<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+							<strong>Penyimpanan Gagal ..!</strong>Ukuran File terlalu besar
+						  </div>
+						</div> 
+						<?php
+						}
+						} else { ?>
+						<div class="container">
+						  <div class="alert alert-warning">
+							<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+							<strong>Penyimpanan Gagal ..!</strong>type bukan PDF atau file kosong atau Ukuran file terlalu besar
+						  </div>
+						</div> 
+						<?php	
+						}
+
+ } 
+
+else if ($op == "uploadpotos")
+ {
+   $nama=$_GET['namas'];
+   $iduser=$_GET['id'];
+   $email=$_GET['email'];
+   $ckttddulu="select username,linkttd from users where username='$email'";
+   $ckttddulua=mysqli_query($conn,$ckttddulu);
+   $ckttddulub=mysqli_fetch_array($ckttddulua);
+   $ckttdduluc=strlen($ckttddulub['linkttd']);
+   //echo $ckttddulu;
+   if($ckttdduluc>0)
+   {
+   echo "<form id=\"formContoh\" method=\"post\" enctype=\"multipart/form-data\" action=\"".$_SERVER['PHP_SELF'].
+        "?op=uploadpotospost\">";
+   echo "<input type=hidden name=namas value=$nama>";
+   echo "<input type=hidden name=iduser value=$iduser>";
+   echo "<input type=hidden name=email value=$email>";
+   echo "<table class=demo-table  width=60%>";
+   echo "<th colspan=2><h4><strong>Upload Photo</strong></h4></th>";
+  echo "<tr><td>Silahkan pilih File Poto <font color='red'> ( Ukuran file max 2MB dan type file jpg,png)</font></td><td> <input type='file' name='fotox3'/></td></tr>";
+  echo "<tr><td colspan=2><input type='submit' id='gobutton' value='Kirim '></td></tr></table>";
+ } 
+ else { ?>
+			<div class="container">
+			  <div class="alert alert-warning">
+			    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+			    <strong>Tanda tangan belum diisi</strong>.....
+			  </div>
+			</div> 
+			<?php	
+			}
+}
+
+else if ($op == "uploadpotospost")
+ {
+    
+    $nama=$_POST['namas'];
+    $iduser=$_POST['iduser'];
+    $email=$_POST['email'];
+    //echo $nama;
+    $namasa=explode(" ", $nama);
+    $dir_foto = "gambardiri/";
+    $namasb=$namasa[0];
+    $nama_foto =$iduser.$namasb.$_FILES['fotox3']['name'];
+                     //echo  $nama_foto;
+    $ext = pathinfo( $nama_foto, PATHINFO_EXTENSION );
+	$ekstensi = array('png','PNG','jpg','JPG'); // Ektensi yg diterima
+              if( in_array( $ext, $ekstensi ) ) {
+          		if( $_FILES['fotox3']['size']<2000000 ) {
+                        if ( move_uploaded_file( $_FILES['fotox3']['tmp_name'], $dir_foto . $nama_foto ) ) { ?>
+					<div class="container">
+					  <div class="alert alert-success">
+						<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+						<strong>Sukses!</strong>Photo terkirim ...
+					  </div>
+					</div> <?php
+					$cekdata1p = "SELECT * FROM apl1 WHERE email = '$email'";
+					$ada1p=mysqli_query($conn,$cekdata1p);
+					if(mysqli_num_rows($ada1p)>0){      
+						$queryp = "UPDATE apl1 SET poto='$nama_foto' WHERE email = '$email'";	
+					$hasilp = mysqli_query($conn,$queryp);				
+					}
+					 }
+                        else { ?>
+					<div class="container">
+					  <div class="alert alert-success">
+						<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+						<strong>Photo Gagal ..!</strong>
+					  </div>
+					</div> 
+					<?php	}
+					 } else { ?>
+					<div class="container">
+					  <div class="alert alert-warning">
+						<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+						<strong>Photo Gagal ..!</strong>Ukuran File terlalu besar (max 2MB)
+					  </div>
+					</div> 
+					<?php
+					}
+					} else { ?>
+					<div class="container">
+					  <div class="alert alert-warning">
+						<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+						<strong>Photo Gagal ..!</strong>type bukan PNG atau file kosong
+					  </div>
+					</div> 
+					<?php	
+				}
+  }
+
+	?>
+
+
+<body>
+<br/>
+<br/>
+<?php
+ 
+// bagian ini digunakan untuk menampilkan semua data
+ // bagian ini digunakan untuk menampilkan semua data
+if ($op == '' || $op == 'update' || $op == 'simpanpermohonan' || $op == 'kompetensi3' || $op == 'uploadbuktipost' || $op == 'uploadpotospost') {
+
+ $cekdataapp = "SELECT * FROM apl1 WHERE trim(email) = '".$unameaplsatu."'";
+   $adaapp=mysqli_query($conn,$cekdataapp);
+   	if(mysqli_num_rows($adaapp)>0){
+        $pesan="Edit Biodata";
+        }else {
+        $pesan="Lengkapi Biodata "; }
+	echo "<table align=left class=demo-table >";
+	$no = 1;
+	 $queryapp ="SELECT users.id, users.nama, users.username as emailusr, users.linkttd, apl1.email as email, apl1.email2 as email2, apl1.buktiapl1, apl1.poto, apl1.validasiapl1 FROM users left JOIN apl1 ON users.username = apl1.email where users.username = '$unameaplsatu'";
+	$hasilapp = mysqli_query($conn,$queryapp);
+	while ($dataapp = mysqli_fetch_array($hasilapp))
+		{
+          $cekpoto=strlen($dataapp['poto'] ?? '');
+          if ($cekpoto<1) {
+          	$namapoto="gambardiri/tidakada.png";
+          } else {
+          	$namapoto="gambardiri/".$dataapp['poto'];
+          } 
+
+          $cekttd=strlen($dataapp['linkttd'] ?? '');
+          if ($cekttd<1) {
+          	$namattd="../imgttd/tidakada.png";
+          } else {
+          	$namattd="../imgttd/".$dataapp['linkttd'];
+          } 
+          
+          $cekbuktiapp=strlen($dataapp['buktiapl1'] ?? '');
+          if ($cekbuktiapp<1) {
+           $namabukti="Bukti Belum ada";
+          } else {
+          	$namabukti="<a href=gambarimages/".$dataapp['buktiapl1']." target=_blank>Lihat Bukti</a>";
+          }
+
+		  $v_status = $dataapp['validasiapl1'] ?? 'N';
+		  if ($v_status == 'Y') {
+		      echo "<div class='alert alert-success'><strong>Terverifikasi:</strong> Berkas APL.01 Anda telah divalidasi oleh Admin/Asesor.</div>";
+		  } else {
+		      echo "<div class='alert alert-warning'><strong>Menunggu Validasi:</strong> Berkas Anda sedang dalam proses pengecekan.</div>";
+		  }
+
+          $emaillink = $dataapp['email'] ?? $dataapp['emailusr'];
+
+   		echo "<tr><td bgcolor='#99CCFF'>Nama Registrasi:</td><td><strong>".$dataapp['nama']."</strong></td><td rowspan=3><img src='".$namapoto."' height=50></td><td rowspan=3><img src='".$namattd."' height=50></td><td rowspan=3>$namabukti</td></tr><tr><td bgcolor='#99CCFF'>";
+ 		echo "User Id : </td><td><strong>".$dataapp['emailusr']."</strong></td></tr>
+ 		  <tr><td bgcolor='#99CCFF'>Email : </td><td><strong>".$dataapp['email2']."</strong></td></tr></table></br></br></br></br>";
+ 		echo "</br></br></br></br><a href=\"".$_SERVER['PHP_SELF']."?op=edit&email=".$dataapp['emailusr']."\" class='btn btn-primary btn-sm' role='button'> <span class='glyphicon glyphicon-plus'><strong>$pesan</strong></a> &nbsp;&nbsp;";
+        echo "<a href='./ttdb/index.php?id=".$dataapp['id']."' class='btn btn-primary btn-sm' role='button' onclick=\"NewWindow(this.href,'name','400','400','yes');return false\"> <span class='glyphicon glyphicon-plus'><strong>Tanda Tangan</strong></a> &nbsp;&nbsp;";
+    	if(mysqli_num_rows($adaapp)>0){
+            echo "<a href=\"".$_SERVER['PHP_SELF']."?op=uploadpotos&email=".$emaillink."&namas=".$dataapp['nama']."&id=".$dataapp['id']."\" class='btn btn-primary btn-sm' role='button'> <span class='glyphicon glyphicon-plus'><strong>Upload Poto</strong></a> &nbsp;&nbsp;";
+			echo "<a href=\"".$_SERVER['PHP_SELF']."?op=uploadbukti&email=".$emaillink."&namas=".$dataapp['nama']."\" class='btn btn-primary btn-sm' role='button'> <span class='glyphicon glyphicon-plus'><strong>Bukti Pendukung</strong></a>&nbsp;&nbsp;"; 
+			echo "<a href=\"".$_SERVER['PHP_SELF']."?op=pengajuanserti&email=".$emaillink."\" class='btn btn-primary btn-sm' role='button'> <span class='glyphicon glyphicon-plus'><strong>Pengajuan sertifikasi</strong></a>";
+		}
+		$no++;
+	}
+	echo "</div>";
+
+} // tutup if tampilkan dashboard
+?>
+
+<!--end databaru-->
+		<div>
+		</div>
+        </div>
+        </div> 
+		
+</body>
+
+</html>
+
+<?php } ?>

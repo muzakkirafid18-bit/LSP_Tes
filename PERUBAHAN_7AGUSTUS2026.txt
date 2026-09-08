@@ -1,0 +1,145 @@
+PERUBAHAN YANG DILAKUKAN CLAUDE - 7 Agustus 2026
+====================================================
+Semua perubahan di bawah ini sudah DITES BENERAN JALAN pakai PHP+MariaDB
+lokal (bukan cuma dibaca kodenya doang), pakai isi database yang kalian
+kasih (lsp_p1_db__5_.sql).
+
+
+1. lummenu/dashboardbaru.php — SEKARANG PAKAI DATA ASLI
+-----------------------------------------------------
+SEBELUM : semua angka (248 peserta, 183 sertifikat, dst), jadwal, daftar
+          peserta terbaru, dan daftar skema di-hardcode langsung di kode.
+          Tidak ada koneksi database sama sekali. Tidak ada guard login
+          (siapapun bisa buka tanpa login).
+SESUDAH : semua angka & tabel diambil langsung query ke database asli.
+          Guard login + cek role 'lsp' ditambahin, formatnya disamain
+          persis kayak inputskema.php biar konsisten.
+
+Konsekuensi: dengan data yang ada sekarang (8 peserta test), angka yang
+muncul jadi kecil (8, bukan 248) — itu BENAR, karena sekarang jujur
+nampilin data asli kalian, bukan angka contoh yang keliatan bagus.
+
+Asumsi yang gue ambil (tolong dicek/disesuaikan kalau salah):
+- "sertifikat_terbit" = jumlah peserta unik yang MAK.05-nya hasil='y'.
+  Kalau LSP kalian punya alur/tabel sertifikat terbit yang beda, tinggal
+  ganti query $sertifikat_terbit di bagian atas file.
+- "jadwal ujian mendatang" diambil dari tabel settanggal, jumlah peserta
+  per tanggal dihitung dari skemasiswa.tanggal yang sama.
+
+
+2. siswa/template_header.php — 3 link diperbaiki
+-----------------------------------------------------
+Link "apl1.php", "mak3.php", "kerahasiaan.php" diganti jadi
+"dashsiswa.php", "mak5.php", "rahasia.php" (nama file yang beneran ada).
+
+PENTING - koreksi dari analisis gue sebelumnya:
+Setelah ditelusuri lebih dalam, file template_header.php ini TERNYATA
+TIDAK di-include di halaman manapun. Jadi 3 link salah di atas SEBENARNYA
+GAK PERNAH muncul/kepake di aplikasi yang kalian jalanin sehari-hari.
+Sebelas halaman siswa (dashsiswa, pilihskema, mak5, portofolio,
+statussaya, testulis, banding, rahasia, apl2, ubahpassword, pilihunit)
+masing-masing punya sidebar sendiri-sendiri, dan semuanya SUDAH benar
+dari awal. Gue tetep benerin file ini untuk jaga-jaga kalau suatu saat
+dipakai.
+
+
+3. TIDAK jadi bikin mak3.php — ini juga koreksi
+-----------------------------------------------------
+Di rangkuman gue sebelumnya, gue bilang form "FR.AK.03" belum dibikin
+dan perlu dibuatin mak3.php. Setelah ditelusuri ke semua halaman siswa,
+ternyata form FR.AK.03 ("Umpan Balik dan Catatan Asesmen") ITU SUDAH ADA
+dan sudah lengkap — cuma nama filenya mak5.php, bukan mak3.php. Jadi
+tidak ada file baru yang perlu dibuat di sini.
+
+
+SUDAH DITES BENERAN JALAN (login asli + buka halaman asli):
+-----------------------------------------------------
+- Login & redirect untuk role peserta, lsp, asesor
+- 10 halaman siswa: mak5, rahasia, banding, portofolio, statussaya,
+  testulis, pilihskema, pilihunit, apl2, ubahpassword
+- lummenu/dashboardbaru.php (dengan guard login + data asli)
+- lummenu/validasiapl1lsp.php & lummenu/validasiapl2.php
+Semua HTTP 200, tidak ada fatal error di log PHP.
+
+
+BELUM DISENTUH (di luar scope "bikin jalan", butuh keputusan/waktu lebih):
+-----------------------------------------------------
+- SQL injection di hampir semua query lama — perbaikan penuh butuh
+  rewrite query satu-satu di puluhan file, ini kerjaan terpisah.
+- File-file lama yang sudah tidak kepake (siswa/save_sign.php yang path-nya
+  salah, lummenu/backsementaravapl2.php yang ada syntax error,
+  lsp_login3.php, lsp_koneksilama.php) — dibiarin apa adanya, gak
+  diapa-apain karena memang tidak dipanggil dari manapun jadi tidak
+  ganggu jalannya aplikasi.
+- Tabel kosong/nyasar di database (p, s, skema_detail) — itu di database
+  kalian sendiri, bukan bagian dari kode di zip ini.
+
+
+UPDATE 9 AGUSTUS 2026 - Fix kolom tabel skema
+====================================================
+Ketemu pas Rafid nemu warning di halaman Kelola Skema: struktur tabel
+`skema` di database live udah di-rename (id->idskema, kode_skema->noskema,
+nama_skema->namaskema), tapi banyak file kode belum ikut diupdate.
+
+26 file diperbaiki: lummenu/inputskema.php, dashboardbaru.php, mapa.php,
+inputunit.php, pemetaanasesor.php, mak2.php, inputelemen.php,
+pihakketiga.php, validasiapl2.php, mak6baru.php, mak5.php, inputsyarat.php,
+ceklistintrumen.php, asesormain.php, observasi.php, dan siswa/rahasia.php,
+banding.php, statussaya.php, mak5.php, pilihskema.php, portofolio.php,
+pilihunit.php, apl2.php, dashsiswa.php.
+
+Juga ditambahkan: guard 8 halaman lummenu sekarang menerima role 'admin'
+selain 'lsp' (sebelumnya admin selalu kena "Anda Tidak Punya Hak Akses").
+
+Semua sudah dites ulang: lint bersih di 26 file, HTTP 200 tanpa fatal
+error di semua halaman lsp/asesor/siswa yang disebut di atas, dropdown
+skema di pilihskema.php sudah menampilkan idskema asli (bukan kosong).
+
+
+UPDATE 11 AGUSTUS 2026 - Fix kolom settanggal, unit, elemen
+====================================================
+Ditemukan setelah Rafid kirim dump database terbaru:
+
+1. Tabel `settanggal`: kolom `ket` sudah di-rename jadi `keterangan` di
+   database live. Diperbaiki di lummenu/dashboardbaru.php.
+
+2. Tabel `unit` & `elemen`: form "Kelola Unit" dan "Kelola Elemen" butuh
+   kolom (unit.ket, unit.status, elemen.kodeelemen, elemen.deskripsi)
+   yang sempat hilang dari tabel live. Rafid sudah menambahkan kolom
+   tersebut kembali via ALTER TABLE, jadi kodenya sekarang cocok lagi
+   tanpa perlu diubah.
+
+Setelah kedua fix di atas, dilakukan scan otomatis ke SEMUA halaman di
+lummenu/ (role lsp & asesor) dan siswa/ (role peserta), termasuk form
+tambah & edit di halaman-halaman Kelola Skema/Unit/Elemen/Syarat/dst —
+semua bersih, tidak ada Warning/Notice/Fatal error/Unknown column yang
+tersisa per tanggal fix ini.
+
+CATATAN: scan ini mencakup tampilan default + op=tambah + op=edit di
+halaman-halaman utama. Kalau nanti masih ada kolom database lain yang
+pernah di-rename tapi belum tersentuh scan ini (misal lewat aksi/menu
+yang jarang dipakai), kemungkinan masih bisa muncul warning serupa -
+kirim screenshot-nya aja kalau ketemu.
+
+
+UPDATE 11 AGUSTUS 2026 (LANJUTAN) - 3 warning kecil terakhir
+====================================================
+1. inputskema.php & inputelemen.php: "Deprecated: Passing null to
+   htmlspecialchars()" - ini CUMA WARNING KOSMETIK, bukan bug beneran.
+   Terjadi karena kolom noskema/kodeelemen ada barisnya yang masih
+   kosong (NULL) - kodeelemen malah baru aja ditambahkan jadi wajar
+   semua data lama kosong. Dibungkus dengan '?? ''' biar gak muncul
+   lagi, tampilan tetap sama (cuma nampilin kosong kalau memang kosong).
+
+2. inputsyarat.php: ini beneran bug lama - query list syarat gak
+   pernah JOIN ke tabel skema, jadi 'namaskema' emang gak pernah ada
+   di hasil query. Ditambahkan LEFT JOIN skema biar nama skema muncul.
+
+CATATAN buat Rafid: bedain 2 jenis pesan error di PHP:
+- "Deprecated" = cuma peringatan gaya penulisan kode lama, HALAMAN TETAP
+  JALAN NORMAL, prioritas rendah.
+- "Warning: Undefined array key" / "Unknown column" / "Fatal error" =
+  ini beneran nunjukin ada yang salah (biasanya kolom gak match), harus
+  dibenerin.
+Kalau nemu yang jenis pertama lagi dan ganggu tampilan, kasih tau aja,
+gampang & cepat dibenerin.
